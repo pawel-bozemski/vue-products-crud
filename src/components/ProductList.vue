@@ -13,7 +13,9 @@
         />
       </div>
       <div class="col">
-        <label for="filter-product-city">Product City if you want</label>
+        <label for="filter-product-city"
+          >Filter by cities (separate cities by comma)</label
+        >
         <input
           type="text"
           class="form-control"
@@ -23,22 +25,47 @@
         />
       </div>
     </div>
-    <table class="table mt-5">
-      <thead class="thead-light">
-        <tr>
-          <th @click="sort('ref')" scope="col">Ref</th>
-          <th @click="sort('name')" scope="col">Name</th>
-          <th @click="sort('city')" scope="col">City</th>
-          <th @click="sort('price')" scope="col">Price</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="product in sortedProducts" :key="product.ref">
-          <Product :item="product" />
-        </tr>
-      </tbody>
-    </table>
+    <div class="row mt-2">
+      <div class="col">
+        <label for="filter-product-priceMax">Filter by minimum price</label>
+        <input
+          type="number"
+          class="form-control"
+          id="filter-product-priceMax"
+          placeholder="Product min price"
+          v-model="this.filters.priceMin"
+        />
+      </div>
+      <div class="col">
+        <label for="filter-product-priceMax">Filter by maximum price</label>
+        <input
+          type="number"
+          class="form-control"
+          id="filter-product-priceMax"
+          placeholder="Product max price"
+          v-model="this.filters.priceMax"
+        />
+      </div>
+    </div>
+    <div class="row mt-5">
+      <h2>Products</h2>
+      <table class="table">
+        <thead class="thead-light">
+          <tr>
+            <th @click="sort('ref')" scope="col">Ref</th>
+            <th @click="sort('name')" scope="col">Name</th>
+            <th @click="sort('city')" scope="col">City</th>
+            <th @click="sort('price')" scope="col">Price</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="product in sortedProducts" :key="product.ref">
+            <Product :item="product" />
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div class="row mt-3">
       <div class="col">
         <button class="btn btn-link" @click="prevPage" :disabled="noPrev">
@@ -98,6 +125,12 @@ export default {
   },
   created() {
     this.products = this.$store.state.products;
+    this.filters.priceMin = this.products.reduce((prev, cur) =>
+      cur.price < prev.price ? cur : prev
+    ).price;
+    this.filters.priceMax = this.products.reduce((prev, cur) =>
+      cur.price > prev.price ? cur : prev
+    ).price;
   },
   computed: {
     noPrev() {
@@ -138,6 +171,12 @@ export default {
           } else {
             return city.includes(searchTerm);
           }
+        })
+        .filter((row) => {
+          return (
+            row.price >= this.filters.priceMin &&
+            row.price <= this.filters.priceMax
+          );
         });
     },
   },
