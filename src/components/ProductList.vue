@@ -13,18 +13,17 @@
         />
       </div>
       <div class="col">
-        <label for="filter-product-name">Product Name</label>
+        <label for="filter-product-city">Product City if you want</label>
         <input
           type="text"
           class="form-control"
-          id="filter-product-name"
-          placeholder="Product name"
-          v-model="this.filters.name"
-          @keyup="filterProducts('name', this.filters.name)"
+          id="filter-product-city"
+          placeholder="Product city"
+          v-model="this.filters.city"
         />
       </div>
     </div>
-    <table class="table">
+    <table class="table mt-5">
       <thead class="thead-light">
         <tr>
           <th @click="sort('ref')" scope="col">Ref</th>
@@ -120,17 +119,18 @@ export default {
         .filter((row, index) => {
           let start = (this.currentPage - 1) * this.pageSize;
           let end = this.currentPage * this.pageSize;
+          if (index >= start && index < end) return true;
+        })
+        .filter((row) => {
           const ref = row.ref.toString().toLowerCase();
           const name = row.name.toLowerCase();
           const searchTerm = this.filters.refOrName.toLowerCase();
-
-          if (index >= start && index < end) {
-            return (
-              true && (name.includes(searchTerm) || ref.includes(searchTerm))
-            );
-          } else {
-            return name.includes(searchTerm) || ref.includes(searchTerm);
-          }
+          return name.includes(searchTerm) || ref.includes(searchTerm);
+        })
+        .filter((row) => {
+          const city = row.city.toLowerCase();
+          const searchTerm = this.filters.city.toLowerCase();
+          return city.includes(searchTerm);
         });
     },
   },
@@ -150,11 +150,6 @@ export default {
     },
     prevPage() {
       if (this.currentPage > 1) this.currentPage--;
-    },
-    filterProducts(id, value) {
-      if (id == "ref") {
-        this.products = this.products.filter((product) => product.ref == value);
-      }
     },
   },
 };
