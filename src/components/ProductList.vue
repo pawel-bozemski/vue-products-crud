@@ -1,5 +1,29 @@
 <template>
   <div class="container">
+    <div class="row">
+      <h2>Filters</h2>
+      <div class="col">
+        <label for="filter-product-ref">Filter by Ref and/or Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="filter-product-ref"
+          placeholder="Product ref and/or name"
+          v-model="this.filters.refOrName"
+        />
+      </div>
+      <div class="col">
+        <label for="filter-product-name">Product Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="filter-product-name"
+          placeholder="Product name"
+          v-model="this.filters.name"
+          @keyup="filterProducts('name', this.filters.name)"
+        />
+      </div>
+    </div>
     <table class="table">
       <thead class="thead-light">
         <tr>
@@ -59,6 +83,13 @@ export default {
         city: "",
         price: "",
       },
+      filters: {
+        refOrName: "",
+        name: "",
+        city: "",
+        priceMin: "",
+        priceMax: "",
+      },
       products: [],
       currentSort: "ref",
       currentSortDir: "asc",
@@ -74,7 +105,6 @@ export default {
       return this.currentPage === 1;
     },
     noNext() {
-      console.log(this.products.length);
       return this.currentPage * this.pageSize > this.products.length;
     },
     sortedProducts() {
@@ -90,7 +120,17 @@ export default {
         .filter((row, index) => {
           let start = (this.currentPage - 1) * this.pageSize;
           let end = this.currentPage * this.pageSize;
-          if (index >= start && index < end) return true;
+          const ref = row.ref.toString().toLowerCase();
+          const name = row.name.toLowerCase();
+          const searchTerm = this.filters.refOrName.toLowerCase();
+
+          if (index >= start && index < end) {
+            return (
+              true && (name.includes(searchTerm) || ref.includes(searchTerm))
+            );
+          } else {
+            return name.includes(searchTerm) || ref.includes(searchTerm);
+          }
         });
     },
   },
@@ -110,6 +150,11 @@ export default {
     },
     prevPage() {
       if (this.currentPage > 1) this.currentPage--;
+    },
+    filterProducts(id, value) {
+      if (id == "ref") {
+        this.products = this.products.filter((product) => product.ref == value);
+      }
     },
   },
 };
