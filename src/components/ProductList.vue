@@ -124,13 +124,20 @@ export default {
         .filter((row) => {
           const ref = row.ref.toString().toLowerCase();
           const name = row.name.toLowerCase();
-          const searchTerm = this.filters.refOrName.toLowerCase();
+          const searchTerm = this.filters.refOrName
+            .toLowerCase()
+            .replace(/\s/g, "");
           return name.includes(searchTerm) || ref.includes(searchTerm);
         })
         .filter((row) => {
           const city = row.city.toLowerCase();
           const searchTerm = this.filters.city.toLowerCase();
-          return city.includes(searchTerm);
+          if (searchTerm.indexOf(",") > -1) {
+            let split = searchTerm.split(",");
+            return split.some((el) => city.includes(el.replace(/\s/g, "")));
+          } else {
+            return city.includes(searchTerm);
+          }
         });
     },
   },
