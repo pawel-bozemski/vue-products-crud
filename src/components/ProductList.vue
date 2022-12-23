@@ -149,11 +149,6 @@ export default {
           if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
           return 0;
         })
-        .filter((row, index) => {
-          let start = (this.currentPage - 1) * this.pageSize;
-          let end = this.currentPage * this.pageSize;
-          if (index >= start && index < end) return true;
-        })
         .filter((row) => {
           const ref = row.ref.toString().toLowerCase();
           const name = row.name.toLowerCase();
@@ -177,6 +172,11 @@ export default {
             row.price >= this.filters.priceMin &&
             row.price <= this.filters.priceMax
           );
+        })
+        .filter((row, index) => {
+          let start = (this.currentPage - 1) * this.pageSize;
+          let end = this.currentPage * this.pageSize;
+          if (index >= start && index < end) return true;
         });
     },
   },
