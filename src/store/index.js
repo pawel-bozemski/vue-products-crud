@@ -33,6 +33,18 @@ export default createStore({
         city: "Poznań",
         price: 1,
       },
+      {
+        ref: 6,
+        name: "Product 6",
+        city: "Poznań",
+        price: 1331,
+      },
+      {
+        ref: 7,
+        name: "Product 7",
+        city: "Poznań",
+        price: 321321,
+      },
     ],
   },
   getters: {},
