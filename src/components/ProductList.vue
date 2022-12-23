@@ -1,49 +1,52 @@
 <template>
-  <div class="hello">
+  <div class="container">
     <table class="table">
       <thead class="thead-light">
         <tr>
           <th scope="col">Ref</th>
           <th scope="col">Name</th>
           <th scope="col">City</th>
-          <th scope="col">Price $</th>
+          <th scope="col">Price</th>
+          <th scope="col">Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
+        <tr v-for="product in products" :key="product.ref">
+          <Product :item="product" />
         </tr>
       </tbody>
     </table>
+    <div class="row mt-3">
+      <button type="button" class="btn btn-primary">Add New Product</button>
+    </div>
   </div>
 </template>
 
 <script>
+import Product from "./Product.vue";
 export default {
   name: "ProductList",
-  props: {
-    msg: String,
+  components: {
+    Product,
+  },
+
+  data() {
+    return {
+      addNew: false,
+      newProd: {
+        ref: "",
+        name: "",
+        city: "",
+        price: "",
+      },
+    };
+  },
+  computed: {
+    products() {
+      return this.$store.state.products;
+    },
   },
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
+<style scoped lang="scss"></style>
