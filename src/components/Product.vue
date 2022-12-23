@@ -91,7 +91,6 @@ export default {
       const payload = {
         ref: ref,
       };
-      console.log(payload);
       this.$store.dispatch("removeProduct", payload);
     },
     editProduct() {

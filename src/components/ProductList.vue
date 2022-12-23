@@ -17,17 +17,27 @@
       </tbody>
     </table>
     <div class="row mt-3">
-      <button type="button" class="btn btn-primary">Add New Product</button>
+      <button
+        v-if="this.addNew === false"
+        type="button"
+        class="btn btn-primary"
+        @click="addNewProduct"
+      >
+        Add New Product
+      </button>
+      <AddNewProduct v-else />
     </div>
   </div>
 </template>
 
 <script>
 import Product from "./Product.vue";
+import AddNewProduct from "./AddNewProduct.vue";
 export default {
   name: "ProductList",
   components: {
     Product,
+    AddNewProduct,
   },
 
   data() {
@@ -44,6 +54,11 @@ export default {
   computed: {
     products() {
       return this.$store.state.products;
+    },
+  },
+  methods: {
+    addNewProduct() {
+      this.addNew = true;
     },
   },
 };
